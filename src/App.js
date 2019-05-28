@@ -24,9 +24,9 @@ export default class App extends Component {
     let bookTypeQuery = e.target.bookType.value;
     let bookFilterString = '';
     if (bookTypeQuery != 'all') {
-      bookFilterString = `filter=${bookTypeQuery}`
+      bookFilterString = `filter=${bookTypeQuery}&`
     }
-    fetch(`https://www.googleapis.com/books/v1/volumes?${bookFilterString}&printType=${printTypeQuery}&q=${searchQuery}&key=${this.state.API_KEY}`)
+    fetch(`https://www.googleapis.com/books/v1/volumes?${bookFilterString}printType=${printTypeQuery}&q=${searchQuery}&key=${this.state.API_KEY}`)
     .then(res => {
       if (res.ok) {
         return res.json()
@@ -38,9 +38,13 @@ export default class App extends Component {
     .then(books => {
       if (books.items) {
         newBooks = books.items.map(book => {
-          let price = null;
+          let price = null,
+          thumbnail = null;
           if (book.saleInfo.listPrice) {
             price = `${book.saleInfo.listPrice.amount} ${book.saleInfo.listPrice.currencyCode}`
+          }
+          if (book.volumeInfo.imageLinks) {
+            thumbnail = book.volumeInfo.imageLinks.thumbnail
           }
           return {
             id: book.id,
@@ -50,7 +54,7 @@ export default class App extends Component {
             printType: book.volumeInfo.printType,
             price,
             isEbook: book.saleInfo.isEbook,
-            thumbnail: book.volumeInfo.imageLinks.thumbnail
+            thumbnail
           }
         })
       } else {
@@ -89,7 +93,7 @@ export default class App extends Component {
             fetchBooks={this.fetchBooks} >
 
           </SearchForm>
-          
+
         </div>
         <section className='resultsContainer'>
           {loading}

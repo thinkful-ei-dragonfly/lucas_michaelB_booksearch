@@ -13,8 +13,9 @@ function ResultItem(props){
   if (props.book.price) {
     price = <p>Price: ${props.book.price}</p>;
   }
+
   return (
-    <li key={props.book.id}>
+    <li className='ResultItem' key={props.book.id}>
       <img src={props.book.thumbnail} alt={props.book.name}/>
       <h2>{props.book.name}</h2>
       {authorsString}
