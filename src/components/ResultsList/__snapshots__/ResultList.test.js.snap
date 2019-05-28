@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ResultsList Component renders ResultsList without errors no input 1`] = `
+<ul
+  className="ResultsList"
+>
+  <div
+    key="0"
+  >
+    No Results.  Use the search bar to find books.
+  </div>
+</ul>
+`;
+
+exports[`ResultsList Component renders ResultsList without errors with sample props 1`] = `
+<ul
+  className="ResultsList"
+>
+  <ResultItem
+    book={
+      Object {
+        "authors": "author 1",
+        "description": "description 1",
+        "id": "1",
+        "isEbook": true,
+        "name": "book 1",
+        "price": "11.99",
+        "printType": "BOOK",
+        "thumbnail": "https://learn.getgrav.org/system/images/media/thumb-jpg.png",
+      }
+    }
+    key="1"
+  />
+</ul>
+`;

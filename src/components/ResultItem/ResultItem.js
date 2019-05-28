@@ -2,7 +2,6 @@ import React from 'react'
 
 function ResultItem(props){
   let authorsString = '';
-  debugger;
   if (props.book.authors) {
     let authors = props.book.authors.map(author => {
       return <span key={author + '/' + props.book.id}>{author}</span>

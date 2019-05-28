@@ -21,8 +21,12 @@ export default class App extends Component {
     let newBooks = [];
     let searchQuery = e.target.search.value;
     let printTypeQuery = e.target.printType.value;
-    debugger;
-    fetch(`https://www.googleapis.com/books/v1/volumes?printType=${printTypeQuery}&q=${searchQuery}&key=${this.state.API_KEY}`)
+    let bookTypeQuery = e.target.bookType.value;
+    let bookFilterString = '';
+    if (bookTypeQuery != 'all') {
+      bookFilterString = `filter=${bookTypeQuery}`
+    }
+    fetch(`https://www.googleapis.com/books/v1/volumes?${bookFilterString}&printType=${printTypeQuery}&q=${searchQuery}&key=${this.state.API_KEY}`)
     .then(res => {
       if (res.ok) {
         return res.json()
@@ -32,22 +36,26 @@ export default class App extends Component {
       }
     })
     .then(books => {
-      newBooks = books.items.map(book => {
-        let price = null;
-        if (book.saleInfo.listPrice) {
-          price = `${book.saleInfo.listPrice.amount} ${book.saleInfo.listPrice.currencyCode}`
-        }
-        return {
-          id: book.id,
-          name: book.volumeInfo.title,
-          authors: book.volumeInfo.authors,
-          description: book.volumeInfo.description,
-          printType: book.volumeInfo.printType,
-          price,
-          isEbook: book.saleInfo.isEbook,
-          thumbnail: book.volumeInfo.imageLinks.thumbnail
-        }
-      })
+      if (books.items) {
+        newBooks = books.items.map(book => {
+          let price = null;
+          if (book.saleInfo.listPrice) {
+            price = `${book.saleInfo.listPrice.amount} ${book.saleInfo.listPrice.currencyCode}`
+          }
+          return {
+            id: book.id,
+            name: book.volumeInfo.title,
+            authors: book.volumeInfo.authors,
+            description: book.volumeInfo.description,
+            printType: book.volumeInfo.printType,
+            price,
+            isEbook: book.saleInfo.isEbook,
+            thumbnail: book.volumeInfo.imageLinks.thumbnail
+          }
+        })
+      } else {
+        newBooks = <div>No Results</div>;
+      }
       return newBooks;
     })
     .then(newBooks => this.setState({
