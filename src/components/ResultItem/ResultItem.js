@@ -1,9 +1,15 @@
 import React from 'react'
 
 function ResultItem(props){
-  let authors = props.book.authors.map(author => {
-    return <span>{author}</span>
-  })
+  let authorsString = '';
+  debugger;
+  if (props.book.authors) {
+    let authors = props.book.authors.map(author => {
+      return <span key={author + '/' + props.book.id}>{author}</span>
+    })
+    authorsString = <p>Authors: {authors}</p>
+  }
+
   let price = '';
   if (props.book.price) {
     price = <p>Price: ${props.book.price}</p>;
@@ -12,7 +18,7 @@ function ResultItem(props){
     <li key={props.book.id}>
       <img src={props.book.thumbnail} alt={props.book.name}/>
       <h2>{props.book.name}</h2>
-      <p>Author(s):{authors}</p>
+      {authorsString}
       {price}
       <p className='bookDesc'>{props.book.description}</p>
     </li>
