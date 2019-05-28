@@ -1,12 +1,15 @@
-import React, {Component} from 'react'
+import React from 'react'
+import ResultItem from '../ResultItem/ResultItem'
 
-export default class ResultsList extends Component {
-  render(){
+function ResultsList(props){
+  const bookResults = props.bookResults.map(book => {
+    return <ResultItem key={book.id} book={book}/>
+  });
     return (
       <ul className="ResultsList">
-      {/*results*/}
-      <p>List of Results</p>
+      {bookResults}
       </ul>
     )
-  }
 }
+
+export default ResultsList;

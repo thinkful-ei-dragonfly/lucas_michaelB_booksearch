@@ -4,38 +4,42 @@ import Header from './components/Header/Header'
 import ResultsList from './components/ResultsList/ResultsList'
 import SearchForm from './components/SearchForm/SearchForm'
 import SearchFilters from './components/SearchFilters/SearchFilters'
-// Header
-// searchForm component
-// -> input + button
-// filters component
-// -> form with two select inputs
-// results component
-// -> list of bookResult components
-// -> clickHandler to expand and show description + price and whatever
-//
+
 export default class App extends Component {
   state = {
     books: [],
     loading: false,
-    error: null
+    error: null,
+    API_KEY: 'AIzaSyB23nntppFskdPBsHXbL7gaFzNKOSX_FtM'
   };
 
   fetchBooks = (e) => {
     e.preventDefault();
     this.setState({loading: true});
     let newBooks = [];
-    const searchQuery = e.target.search.value;
-    fetch('https://www.googleapis.com/books/v1/volumes?key=AIzaSyB23nntppFskdPBsHXbL7gaFzNKOSX_FtM&q=' + searchQuery)
-    .then(res => res.json())
+    let searchQuery = e.target.search.value;
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&key=${this.state.API_KEY}`)
+    .then(res => {
+      if (res.ok) {
+        return res.json()
+      }
+      else {
+        Promise.reject('something went wrong')
+      }
+    })
     .then(books => {
       newBooks = books.items.map(book => {
+        let price = null;
+        if (book.saleInfo.listPrice) {
+          price = `${book.saleInfo.listPrice.amount} ${book.saleInfo.listPrice.currencyCode}`
+        }
         return {
           id: book.id,
           name: book.volumeInfo.title,
           authors: book.volumeInfo.authors,
           description: book.volumeInfo.description,
           printType: book.volumeInfo.printType,
-          price: book.saleInfo.listPrice,
+          price,
           isEbook: book.saleInfo.isEbook,
           thumbnail: book.volumeInfo.imageLinks.thumbnail
         }
@@ -62,11 +66,11 @@ export default class App extends Component {
             fetchBooks={this.fetchBooks} >
 
           </SearchForm>
-          <SearchFilters></SearchFilters>
+          <SearchFilters ></SearchFilters>
         </div>
         <section className='resultsContainer'>
           {loading}
-          <ResultsList/>
+          <ResultsList bookResults={this.state.books}/>
         </section>
 
 
@@ -74,4 +78,3 @@ export default class App extends Component {
     );
   }
 }
-
